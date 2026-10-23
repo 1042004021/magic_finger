@@ -1,58 +1,93 @@
-# 魔法手指 Android 16 独立原型
+# 魔法手指 · Magic Finger
 
-**最新模块+APK交付及验证边界见 [MODULE.md](MODULE.md)，以下记录包括旧短时原型，不代表常驻版已验收。**
+Android 全局触摸粒子特效实验项目：**设置 APK + Root 模块**。APK 负责设置和普通悬浮窗绘制，Root 后端被动监听触摸，通过本地 socket 转发坐标。
 
-## 最新实验状态
+> **实验软件，不保证兼容所有设备。** 当前普通悬浮窗不能覆盖部分系统界面。高层光环探针虽然能显示在通知面板和最近任务之上，但用户确认它会阻挡下层点击、滑动，**不可作为可用方案运行或常驻部署**。
 
-- 0.2 采用设置 APK + Root 输入后端，提供 KernelSU、Magisk、APatch 三种模块打包入口；Magisk/APatch 尚未实机验证。
-- 普通应用悬浮层可跨应用显示，但无法覆盖部分系统界面。
-- `LayerProbe` 是隔离实验，静态标记已在通知面板和最近任务显示；**用户确认高层光环运行时下层无法点击、滑动，触摸透传验收失败，不可作为常驻方案使用**。测试已结束，设备操作恢复正常。
-- 当前源码包含未部署的实验修改，不等同于手机已安装版本；不自动安装或启动探针。
-- 不提交构建缓存、APK/ZIP/DEX 和签名私钥。首次构建会生成新的本地测试签名，无法覆盖安装由其他签名签署的 APK。
-- 构建脚本中的 SDK/JDK 路径为本机路径，其他环境需自行调整。运行 `sh build.sh`，再用 `python3 package_module.py --target kernelsu`（或 `magisk` / `apatch`）打包。
+## 功能
 
-## 历史实验记录（非当前使用说明）
+- 总开关及无需 Root 的本页预览。
+- 星星、爱心、光点、光环、随机五种效果。
+- 调节粒子密度、大小和消散时间。
+- 独立前台绘制服务及 Root 后端重连、息屏停止监听。
+- KernelSU、Magisk、APatch 分别打包，共用同一 APK。
 
-## APK + Root relay 首次验证
+所有图形自行绘制，不包含旧 ROM 的代码或素材。不依赖 Xposed / LSPosed，不替换系统框架，不修改 SELinux。
 
-已改为 `magic.finger.ParticleActivity` 正常应用进程创建 TYPE_APPLICATION_OVERLAY 窗口；独立 `magic.finger.TouchRelay` 使用被动 InputMonitor，通过随机命名的本地 socket 传输临时坐标，不落盘。新实现不使用旧 ROM 代码/素材。
+## 当前验证情况
 
-已生成并验签 `dist/magic-finger-experimental.apk`，安装到目标手机，授予本应用 SYSTEM_ALERT_WINDOW appop（测试后仍保留，未还原）。没有开机项。安装后由电脑显式启动，界面30秒关闭显示层，relay25秒注销监听并结束。
+| 项目 | 状态 |
+| --- | --- |
+| Android 16 / API 36、Flyme 移植 ROM、KernelSU | 已进行目标设备测试，不代表其他 ROM 兼容 |
+| 普通应用中的全局效果 | 用户确认有效，普通点击滑动此前正常 |
+| 通知面板、最近任务 | 普通悬浮窗覆盖不完整，尚未解决 |
+| 高层 Surface 光环探针 | 显示成功，但阻挡触摸，验收失败；未整合到正常服务入口 |
+| Magisk / APatch | 打包及结构检查通过，未实机验证 |
+| 旋转、多屏、多用户、长期功耗与保活 | 未完成验证 |
 
-首次25秒实测：RELAY_READY 成功，接收1399个 MotionEvent，结束输出 RELAY_FINISHED；检查无残留 TouchRelay 进程或 MagicFingerParticles 窗口。此日志只证明监听和数据传输路径启动，视觉效果及正常应用是否收到点击等待用户确认。界面 APK 进程可能留在缓存中，但特效窗口已移除。
+详细实验经过与验证边界见 [MODULE.md](MODULE.md)。仓库包含未部署的实验源码，不等同于手机正在运行的已安装版本。
 
-当前悬浮层 alpha=0.7，低于Android默认不受信任悬浮窗触摸遮挡阈值；厂商行为及与漂移同时运行的坐标仍需测试。多指事件目前简化为逐点发射，非完整多指轨迹模型。尚未处理权限撤销、配置变化、后台长期保活和模块封装。
+## 安装与使用
 
-构建：`sh build.sh`（本机SDK34/JDK8编译，运行目标Android16，compile-only隐藏API stub不打包）；旧根进程直接建窗口失败路径保留为参考，不再作为当前测试入口。
+需要 Root 和悬浮窗权限。安装脚本要求 Android 14+，**仅实测 Android 16**，不代表其他版本已兼容。
 
-全新实现，不复制旧 ROM 粒子代码或素材，不修改 screen-drift 模块。
+1. 安装配套 APK，打开“魔法手指”。
+2. 授予悬浮窗权限，开启总开关；可先在本页预览调整参数。
+3. 按实际 Root 框架选择一个模块 ZIP，通过对应管理器安装。
+4. 重启后测试普通应用中的效果。
 
-## 当前状态
+| 框架 | 构建产物 |
+| --- | --- |
+| KernelSU | `magic-finger-0.2-experimental.zip` |
+| Magisk | `magic-finger-magisk-0.2-experimental.zip` |
+| APatch | `magic-finger-apatch-0.2-experimental.zip` |
 
-- 已确认目标设备 API36、Root、1200×2670。
-- 只读反射探针确认 InputManagerGlobal.monitorGestureInput / InputMonitor.getInputChannel / InputEventReceiver 可用的方法签名。存在方法不代表实际权限或注册成功。
-- 已构建 Canvas 硬件加速透明粒子层：按下绽放星星，移动生成轨迹，750ms 渐隐，最多220粒子；空闲停止请求绘制。
-- 拟使用 TYPE_SECURE_SYSTEM_OVERLAY（2015）及 NOT_TOUCHABLE/NOT_FOCUSABLE；旁听 monitorGestureInput，不调用 pilferPointers，不注入事件。
-- 仅计数输入事件，不记录坐标/轨迹/应用信息，不抓屏。
-- 编译及 D8 构建通过，compile-only 隐藏 API stub 不打包。
-- 手机处于 Dozing，尚未部署或启动特效；输入权限、窗口权限、坐标映射、实际穿透、旋转及与漂移模块共存均未验证。
+三种包的模块 ID 均为 `magic_finger`，同一设备只选一种。模块不会自动安装 APK，APK 无需单独授予 su。Magisk 通过管理器安装，APatch 包属于 APModule；不承诺 Recovery 安装。
 
-## 首次亮屏测试结果
+关闭效果可使用 APK 总开关。**停用或卸载模块后请重启**；卸载 APK 前建议先关闭效果。如果实验版本影响操作，应停止使用并停用模块，不要运行高层探针。
 
-亮屏后推送并执行20秒短测，在 WindowManager.openSession 阶段被拒绝：`IllegalStateException: Unknown pid=16100 uid=0`。透明窗口未成功建立，输入监听尚未注册，所以没有显示粒子。Root 独立 app_process 并非 AMS 注册的应用进程，当前 ROM 对窗口 session 的进程身份校验不接受此用法；具体检查位置尚未进一步定位。
+## 源码构建
 
-异常路径原先尝试移除未附加窗口，产生二次异常；已增加 attached 标志保护，并在失败清理后结束自身。检查无残留 MagicFinger 进程，未修改系统设置或现有漂移模块。后续需要调整窗口创建架构，不能通过 Root 身份直接假设 WindowManager 接受窗口。
+当前为轻量 Java / Android SDK 命令行项目，不使用 Gradle。
 
-## 构建
+需要：JDK 8、Android SDK Platform 34、Build Tools 34.0.0、Python 3，以及可运行 D8 / apksigner 的 Java 环境。`build.sh` 中 SDK、JDK 和 keytool 路径为开发机路径，其他电脑需先调整。
 
-`sh build.sh`，生成 dist/classes.dex。
-
-## 计划短测（亮屏解锁后）
-
-推送至 `/data/local/tmp/magic-finger.dex`，Root 下运行：
-
-```sh
-CLASSPATH=/data/local/tmp/magic-finger.dex app_process /system/bin MagicFinger 20
+```bash
+sh build.sh
+python3 package_module.py --target kernelsu
+python3 package_module.py --target magisk
+python3 package_module.py --target apatch
 ```
 
-原型限制5～120秒，到期销毁输入监听及窗口后终止自身。root 进程被杀后窗口/输入通道也应随 Binder 生命周期释放，该异常场景尚未实测。不安装APK，不改系统设置或开机项。
+输出位于 `dist/`，APK 名称为 `magic-finger-experimental.apk`。构建会检查 APK 签名、模块脚本语法及 ZIP 完整性。
+
+首次构建会在 `build/debug.keystore` 生成本地测试签名。**请妥善保留密钥；不同签名的 APK 不能直接覆盖安装。** 仓库不提交私钥、构建缓存或二进制产物。
+
+## 目录
+
+```text
+src/
+  ParticleActivity.java   设置和预览
+  ParticleService.java    前台普通悬浮窗绘制服务
+  MagicFinger.java        粒子绘制及历史窗口实验
+  TouchRelay.java         Root 被动输入监听与本地转发
+  LayerProbe.java         已知阻挡触摸的隔离探针，勿作为正常入口
+  InputProbe.java         输入能力检查探针
+stubs/                   仅编译使用的隐藏 API 声明，不打入 DEX
+module/                  共用模块配置与启动脚本
+magisk/                  Magisk 安装入口
+build.sh                 APK / DEX 构建
+package_module.py        三种框架模块打包
+```
+
+## 隐私与安全边界
+
+- APK 不申请联网权限；运行时不保存触摸坐标或轨迹。
+- Root 后端与 APK 通过本地 socket 通信，并检查对端 UID。
+- 输入监听不调用 `pilferPointers`，不主动注入触摸事件；这不代表所有实验实现都已通过触摸透传验收。
+- UID 校验不是抵抗恶意 Root 的安全边界。Root 模块仅应从可信来源安装。
+- 固定 user 0，未支持 Android 多用户。其他应用或系统可隐藏普通悬浮窗。
+
+## Releases
+
+[Release 页面](https://github.com/1042004021/magic_finger/releases)用于发布实验版本。当前源码预发布仅附 GitHub 自动生成的源码归档，**不含可直接安装的 APK 或模块 ZIP**；源码归档也不能作为 Root 模块刷入。不要将预发布视为完整兼容性或长期稳定性承诺。

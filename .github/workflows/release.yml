@@ -1,0 +1,40 @@
+name: Publish experimental source release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create source-only prerelease
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tag = context.ref.replace('refs/tags/', '');
+            await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: tag,
+              name: `魔法手指 ${tag} · 源码实验预发布`,
+              draft: false,
+              prerelease: true,
+              body: [
+                '## 源码实验预发布',
+                '',
+                '设置 APK + Root 输入后端，支持 KernelSU、Magisk、APatch 分别打包。',
+                '',
+                '### 已知问题与验证边界',
+                '- 普通悬浮层不能覆盖部分系统界面。',
+                '- 高层光环探针会阻挡下层点击、滑动，验收失败，不可作为常驻方案使用。',
+                '- Magisk / APatch 未实机验证，旋转、多屏、多用户和长期功耗未完成验证。',
+                '- 本版本仅发布源码，不附 APK 或模块安装包；GitHub 自动生成的源码 ZIP 不能刷入 Root 管理器。',
+                '',
+                '构建、安装及详细验证记录请阅读 README.md 和 MODULE.md。'
+              ].join('\n')
+            });
