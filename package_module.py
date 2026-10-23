@@ -8,8 +8,7 @@ target = parser.parse_args().target
 base = Path(__file__).resolve().parent
 for name in ("service.sh", "customize.sh"):
     subprocess.run(["sh", "-n", str(base / "module" / name)], check=True)
-out = base / ("dist/magic-finger-0.2-experimental.zip" if target == "kernelsu"
-              else "dist/magic-finger-" + target + "-0.2-experimental.zip")
+out = base / ("dist/magic-finger-" + target + "-0.2-beta.zip")
 with ZipFile(out, "w", ZIP_DEFLATED) as z:
     for p in sorted((base / "module").iterdir()):
         if p.is_file(): z.write(p, p.name)

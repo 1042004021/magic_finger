@@ -38,9 +38,9 @@ Android 全局触摸粒子特效实验项目：**设置 APK + Root 模块**。AP
 
 | 框架 | 构建产物 |
 | --- | --- |
-| KernelSU | `magic-finger-0.2-experimental.zip` |
-| Magisk | `magic-finger-magisk-0.2-experimental.zip` |
-| APatch | `magic-finger-apatch-0.2-experimental.zip` |
+| KernelSU | `magic-finger-kernelsu-0.2-beta.zip` |
+| Magisk | `magic-finger-magisk-0.2-beta.zip` |
+| APatch | `magic-finger-apatch-0.2-beta.zip` |
 
 三种包的模块 ID 均为 `magic_finger`，同一设备只选一种。模块不会自动安装 APK，APK 无需单独授予 su。Magisk 通过管理器安装，APatch 包属于 APModule；不承诺 Recovery 安装。
 
@@ -90,4 +90,6 @@ package_module.py        三种框架模块打包
 
 ## Releases
 
-[Release 页面](https://github.com/1042004021/magic_finger/releases)用于发布实验版本。当前源码预发布仅附 GitHub 自动生成的源码归档，**不含可直接安装的 APK 或模块 ZIP**；源码归档也不能作为 Root 模块刷入。不要将预发布视为完整兼容性或长期稳定性承诺。
+[v0.2-beta](https://github.com/1042004021/magic_finger/releases/tag/v0.2-beta) 提供 `magic-finger-0.2-beta.apk`、三种 Root 模块 ZIP 和 `SHA256SUMS` 校验文件。Beta 的 APK / 模块版本均为 0.2-beta，versionCode=3，APK 沿用开发机原测试签名。完成构建、验签和包结构检查，尚未完成本版实机回归。高层探针没有接入正常服务入口。
+
+发布附件副本位于 `release-assets/v0.2-beta/`，不包含签名私钥；常规构建仍输出至已忽略的 `dist/`。GitHub 自动生成的 Source code ZIP 不能作为 Root 模块刷入。旧 v0.2-experimental 仅发布源码。不要将 Beta 视为完整兼容性或长期稳定性承诺。

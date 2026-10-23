@@ -1,4 +1,4 @@
-name: Publish experimental source release
+name: Publish beta release
 
 on:
   push:
@@ -12,20 +12,25 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Create source-only prerelease
+      - uses: actions/checkout@v4
+      - name: Verify release files
+        run: sha256sum -c SHA256SUMS
+        working-directory: release-assets/v0.2-beta
+      - name: Publish beta prerelease and installers
         uses: actions/github-script@v7
         with:
           script: |
             const tag = context.ref.replace('refs/tags/', '');
-            await github.rest.repos.createRelease({
+            if (tag !== 'v0.2-beta') throw new Error('Prepare matching assets before publishing a new version');
+            const release = await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
               tag_name: tag,
-              name: `魔法手指 ${tag} · 源码实验预发布`,
+              name: `魔法手指 ${tag} · Beta 测试版`,
               draft: false,
               prerelease: true,
               body: [
-                '## 源码实验预发布',
+                '## Beta 测试版',
                 '',
                 '设置 APK + Root 输入后端，支持 KernelSU、Magisk、APatch 分别打包。',
                 '',
@@ -33,8 +38,25 @@ jobs:
                 '- 普通悬浮层不能覆盖部分系统界面。',
                 '- 高层光环探针会阻挡下层点击、滑动，验收失败，不可作为常驻方案使用。',
                 '- Magisk / APatch 未实机验证，旋转、多屏、多用户和长期功耗未完成验证。',
-                '- 本版本仅发布源码，不附 APK 或模块安装包；GitHub 自动生成的源码 ZIP 不能刷入 Root 管理器。',
+                '- 正常服务仍使用普通应用悬浮窗，不启用高层探针。',
+                '- 该 Beta 已完成构建、签名及安装包结构检查，未完成新版本实机回归。',
+                '',
+                '### 安装',
+                '安装 magic-finger-0.2-beta.apk，授予悬浮窗权限并开启总开关。按实际 Root 框架选择 kernelsu / magisk / apatch 中一个模块 ZIP，通过对应管理器安装后重启。',
+                '停用或卸载模块后重启。APK 沿用开发机原测试签名，versionCode=3；并非生产签名。',
+                'SHA256SUMS 提供附件校验。GitHub 自动生成的 Source code ZIP 不能作为模块刷入。',
                 '',
                 '构建、安装及详细验证记录请阅读 README.md 和 MODULE.md。'
               ].join('\n')
             });
+            const fs = require('fs');
+            const directory = `release-assets/${tag}`;
+            for (const name of fs.readdirSync(directory)) {
+              await github.rest.repos.uploadReleaseAsset({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: release.data.id,
+                name,
+                data: fs.readFileSync(`${directory}/${name}`)
+              });
+            }

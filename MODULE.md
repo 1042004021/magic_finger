@@ -1,5 +1,9 @@
 # 魔法手指 0.2 实验版：KernelSU + APK
 
+## 0.2-beta 发布
+
+APK 与模块版本更新为0.2-beta，versionCode=3；APK沿用本地原测试签名。提供APK、KernelSU/Magisk/APatch三种模块包和SHA256校验。普通悬浮窗仍为正常入口，高层探针未接入服务。已完成构建、签名验证、模块脚本及ZIP检查，未将新包安装到手机，未完成Beta实机回归。下文0.2-experimental文件名与实验记录为历史状态，当前安装文件以README和Beta Release为准。
+
 ## 系统界面层级诊断
 
 ### 高层绘制隔离实验（未成功，未部署到模块）
