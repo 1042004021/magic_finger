@@ -1,0 +1,9 @@
+/build/
+/dist/
+*.keystore
+*.jks
+local.properties
+.idea/
+*.iml
+__pycache__/
+*.pyc
