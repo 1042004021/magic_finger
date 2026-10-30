@@ -1,0 +1,13 @@
+[已作废] 0.3-beta 模块包不可用
+
+原因：module/service.sh 把 `am start-foreground-service` 的输出重定向到模块目录，
+该命令由 system_server 执行，写入被 SELinux 拒绝，导致服务启动事务失败，
+开机后没有粒子效果（日志报 Failed transaction (2147483646)）。
+
+处理：
+- 请勿刷入本目录的 magic-finger-*-0.3-beta.zip。
+- 请改用 0.4-beta 的模块包，修复说明见 CHANGELOG.md 与 BUG-Task01-001。
+- 本目录的 magic-finger-0.3-beta.apk 代码正常，可继续使用；它与 0.4-beta 的 APK
+  仅版本号不同。
+
+保留本目录仅用于追溯，不再提供支持。

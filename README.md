@@ -100,7 +100,7 @@ package_module.py        三种框架模块打包
 
 [v0.4-beta](https://github.com/1042004021/magic_finger/releases/tag/v0.4-beta) 提供 `magic-finger-0.4-beta.apk`、三种 Root 模块 ZIP 和 `SHA256SUMS` 校验文件。本版修复开机后模块无法拉起服务的 SELinux 重定向问题，versionCode=5。**必须重刷模块并重启**；APK 功能与 0.3-beta 相同。
 
-[v0.3-beta](https://github.com/1042004021/magic_finger/releases/tag/v0.3-beta) 提供 `magic-finger-0.3-beta.apk`、三种 Root 模块 ZIP 和 `SHA256SUMS` 校验文件。本版移除 APK 总开关并重做设置页，versionCode=4，APK 沿用开发机原测试签名。设置页已在目标设备安装验证，模块开机链路存在上述启动问题。高层探针没有接入正常服务入口。完整变化见 [CHANGELOG.md](CHANGELOG.md)。
+⚠️ [v0.3-beta](https://github.com/1042004021/magic_finger/releases/tag/v0.3-beta) **模块包已作废，请勿刷入**；其 APK 本身正常，可继续使用。本版模块存在开机无法拉起服务的问题，处理说明见 BUG-Task01-001。本版移除 APK 总开关并重做设置页，versionCode=4。高层探针没有接入正常服务入口。完整变化见 [CHANGELOG.md](CHANGELOG.md)。
 
 [v0.2-beta](https://github.com/1042004021/magic_finger/releases/tag/v0.2-beta) 为上一版，仍保留 APK 总开关，versionCode=3。
 
