@@ -31,8 +31,8 @@ public final class ParticleService extends Service {
         PendingIntent settings = PendingIntent.getActivity(this, 0, new Intent(this, ParticleActivity.class), PendingIntent.FLAG_IMMUTABLE);
         startForeground(1, new Notification.Builder(this, "particles")
                 .setSmallIcon(android.R.drawable.ic_menu_edit).setContentTitle("魔法手指运行中")
-                .setContentText("点此调整效果或关闭").setContentIntent(settings).setOngoing(true).build());
-        if (!getSharedPreferences("effects", 0).getBoolean("enabled", false) || !Settings.canDrawOverlays(this)) {
+                .setContentText("点此调整效果").setContentIntent(settings).setOngoing(true).build());
+        if (!Settings.canDrawOverlays(this)) {
             stopSelf(); return;
         }
         try {

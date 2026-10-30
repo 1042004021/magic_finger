@@ -14,7 +14,7 @@ Android 全局触摸粒子特效实验项目：**设置 APK + Root 模块**。AP
 
 ## 功能列表
 
-- 总开关及无需 Root 的本页预览。
+- 刷入模块即开启，无需 Root 的本页样式预览与参数调节。
 - 星星、爱心、光点、光环、随机五种效果。
 - 调节粒子密度、大小和消散时间。
 - 独立前台绘制服务及 Root 后端重连、息屏停止监听。
@@ -40,19 +40,19 @@ Android 全局触摸粒子特效实验项目：**设置 APK + Root 模块**。AP
 需要 Root 和悬浮窗权限。安装脚本要求 Android 14+，**仅实测 Android 16**，不代表其他版本已兼容。
 
 1. 安装配套 APK，打开“魔法手指”。
-2. 授予悬浮窗权限，开启总开关；可先在本页预览调整参数。
+2. 授予悬浮窗权限；可先在本页预览调整样式参数，本页没有开关。
 3. 按实际 Root 框架选择一个模块 ZIP，通过对应管理器安装。
-4. 重启后测试普通应用中的效果。
+4. 重启后模块自动拉起服务，普通应用中即生效。
 
 | 框架 | 构建产物 |
 | --- | --- |
-| KernelSU | `magic-finger-kernelsu-0.2-beta.zip` |
-| Magisk | `magic-finger-magisk-0.2-beta.zip` |
-| APatch | `magic-finger-apatch-0.2-beta.zip` |
+| KernelSU | `magic-finger-kernelsu-0.3-beta.zip` |
+| Magisk | `magic-finger-magisk-0.3-beta.zip` |
+| APatch | `magic-finger-apatch-0.3-beta.zip` |
 
 三种包的模块 ID 均为 `magic_finger`，同一设备只选一种。模块不会自动安装 APK，APK 无需单独授予 su。Magisk 通过管理器安装，APatch 包属于 APModule；不承诺 Recovery 安装。
 
-关闭效果可使用 APK 总开关。**停用或卸载模块后请重启**；卸载 APK 前建议先关闭效果。如果实验版本影响操作，应停止使用并停用模块，不要运行高层探针。
+APK 不提供开关，刷入模块即代表开启。**关闭效果需停用或卸载模块后重启**；卸载 APK 前建议先停用模块。如果实验版本影响操作，应停止使用并停用模块，不要运行高层探针。
 
 ## 源码构建
 
@@ -98,6 +98,8 @@ package_module.py        三种框架模块打包
 
 ## Releases
 
-[v0.2-beta](https://github.com/1042004021/magic_finger/releases/tag/v0.2-beta) 提供 `magic-finger-0.2-beta.apk`、三种 Root 模块 ZIP 和 `SHA256SUMS` 校验文件。Beta 的 APK / 模块版本均为 0.2-beta，versionCode=3，APK 沿用开发机原测试签名。完成构建、验签和包结构检查，尚未完成本版实机回归。高层探针没有接入正常服务入口。
+[v0.3-beta](https://github.com/1042004021/magic_finger/releases/tag/v0.3-beta) 提供 `magic-finger-0.3-beta.apk`、三种 Root 模块 ZIP 和 `SHA256SUMS` 校验文件。本版移除 APK 总开关并重做设置页，versionCode=4，APK 沿用开发机原测试签名。设置页已在目标设备安装验证，模块开机链路未做本版实机回归。高层探针没有接入正常服务入口。完整变化见 [CHANGELOG.md](CHANGELOG.md)。
 
-发布附件副本位于 `release-assets/v0.2-beta/`，不包含签名私钥；常规构建仍输出至已忽略的 `dist/`。GitHub 自动生成的 Source code ZIP 不能作为 Root 模块刷入。旧 v0.2-experimental 仅发布源码。不要将 Beta 视为完整兼容性或长期稳定性承诺。
+[v0.2-beta](https://github.com/1042004021/magic_finger/releases/tag/v0.2-beta) 为上一版，仍保留 APK 总开关，versionCode=3。
+
+发布附件副本位于 `release-assets/v{版本}/`，不包含签名私钥；常规构建仍输出至已忽略的 `dist/`。GitHub 自动生成的 Source code ZIP 不能作为 Root 模块刷入。旧 v0.2-experimental 仅发布源码。不要将 Beta 视为完整兼容性或长期稳定性承诺。
