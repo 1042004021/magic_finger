@@ -1,5 +1,9 @@
 # 魔法手指 0.2 实验版：KernelSU + APK
 
+## 0.4-beta 发布
+
+APK 与模块版本更新为0.4-beta，versionCode=5；APK功能与0.3-beta相同。本版修复模块开机拉不起绘制服务的问题：`am` 实际由 system_server 执行，原先把输出重定向到模块目录会被SELinux拒绝，导致启动事务失败并报 `Failed transaction (2147483646)`；现改为经管道由root侧写入日志。必须重刷模块并重启验证。
+
 ## 0.3-beta 发布
 
 APK 与模块版本更新为0.3-beta，versionCode=4；APK沿用本地测试签名。提供APK、KernelSU/Magisk/APatch三种模块包和SHA256校验。本版移除APK总开关和启动按钮，刷入模块即代表开启，关闭需停用或卸载模块后重启；设置页重做为深色卡片界面，并显示悬浮窗授权状态。设置页已在目标设备安装验证，模块开机链路未做本版实机回归。详细变化见CHANGELOG.md。

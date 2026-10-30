@@ -46,9 +46,9 @@ Android 全局触摸粒子特效实验项目：**设置 APK + Root 模块**。AP
 
 | 框架 | 构建产物 |
 | --- | --- |
-| KernelSU | `magic-finger-kernelsu-0.3-beta.zip` |
-| Magisk | `magic-finger-magisk-0.3-beta.zip` |
-| APatch | `magic-finger-apatch-0.3-beta.zip` |
+| KernelSU | `magic-finger-kernelsu-0.4-beta.zip` |
+| Magisk | `magic-finger-magisk-0.4-beta.zip` |
+| APatch | `magic-finger-apatch-0.4-beta.zip` |
 
 三种包的模块 ID 均为 `magic_finger`，同一设备只选一种。模块不会自动安装 APK，APK 无需单独授予 su。Magisk 通过管理器安装，APatch 包属于 APModule；不承诺 Recovery 安装。
 
@@ -98,7 +98,9 @@ package_module.py        三种框架模块打包
 
 ## Releases
 
-[v0.3-beta](https://github.com/1042004021/magic_finger/releases/tag/v0.3-beta) 提供 `magic-finger-0.3-beta.apk`、三种 Root 模块 ZIP 和 `SHA256SUMS` 校验文件。本版移除 APK 总开关并重做设置页，versionCode=4，APK 沿用开发机原测试签名。设置页已在目标设备安装验证，模块开机链路未做本版实机回归。高层探针没有接入正常服务入口。完整变化见 [CHANGELOG.md](CHANGELOG.md)。
+[v0.4-beta](https://github.com/1042004021/magic_finger/releases/tag/v0.4-beta) 提供 `magic-finger-0.4-beta.apk`、三种 Root 模块 ZIP 和 `SHA256SUMS` 校验文件。本版修复开机后模块无法拉起服务的 SELinux 重定向问题，versionCode=5。**必须重刷模块并重启**；APK 功能与 0.3-beta 相同。
+
+[v0.3-beta](https://github.com/1042004021/magic_finger/releases/tag/v0.3-beta) 提供 `magic-finger-0.3-beta.apk`、三种 Root 模块 ZIP 和 `SHA256SUMS` 校验文件。本版移除 APK 总开关并重做设置页，versionCode=4，APK 沿用开发机原测试签名。设置页已在目标设备安装验证，模块开机链路存在上述启动问题。高层探针没有接入正常服务入口。完整变化见 [CHANGELOG.md](CHANGELOG.md)。
 
 [v0.2-beta](https://github.com/1042004021/magic_finger/releases/tag/v0.2-beta) 为上一版，仍保留 APK 总开关，versionCode=3。
 

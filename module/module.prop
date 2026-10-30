@@ -1,6 +1,6 @@
 id=magic_finger
 name=Magic Finger / 魔法手指
-version=0.3-beta
-versionCode=4
+version=0.4-beta
+versionCode=5
 author=elder
 description=全局触摸粒子 Root 后端；配套 APK 调节星星/爱心/光点/光环、密度、大小和消散时间。Beta版，系统界面覆盖不完整；停用卸载后重启。

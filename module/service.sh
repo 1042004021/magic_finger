@@ -14,7 +14,11 @@ while [ -d "$MODDIR" ] && [ ! -f "$MODDIR/disable" ] && [ ! -f "$MODDIR/remove" 
     dumpsys power | grep -q 'mWakefulness=Awake' || continue
     UID_APP=$(cmd package list packages -U magic.finger | sed -n 's/^package:magic.finger uid:\([0-9]*\)$/\1/p')
     [ -n "$UID_APP" ] || continue
-    am start-foreground-service --user 0 -n magic.finger/.ParticleService > "$MODDIR/runtime/start.log" 2>&1
+    # am is a wrapper of "cmd activity"; its stdout is written by system_server,
+    # which SELinux forbids writing into the module dir. Pipe through cat so the
+    # root-side shell performs the file write instead.
+    am start-foreground-service --user 0 -n magic.finger/.ParticleService 2>&1 \
+        | cat > "$MODDIR/runtime/start.log"
     sleep 1
     app_process /system/bin magic.finger.TouchRelay magic-finger-module-v1 "$UID_APP" > "$MODDIR/runtime/relay.log" 2>&1 &
     RELAY=$!
